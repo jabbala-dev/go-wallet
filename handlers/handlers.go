@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jabbala/go-wallet/services"
+	"github.com/jabbala-dev/go-wallet/services"
 )
 
 func GenerateKeyPair(c *gin.Context) {

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jabbala/go-wallet/handlers"
+	"github.com/jabbala-dev/go-wallet/handlers"
 )
 
 func main() {

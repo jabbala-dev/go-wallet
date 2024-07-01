@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/jabbala/go-wallet/utils"
 )
 
 var privateKeyFile = "private_key.txt"
