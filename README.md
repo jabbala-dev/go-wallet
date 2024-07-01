@@ -142,6 +142,13 @@ The project is enhanced to make it a complete application capable of integrating
 
 We'll use `gin-gonic` framework for the RESTful API and `go-ethereum` for blockchain interactions. 
 
+### install dependencies
+```sh
+go get github.com/gin-gonic/gin
+go get github.com/ethereum/go-ethereum
+
+```
+
 ### Project Structure
 ```go
 blockchain-wallet/
@@ -167,7 +174,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/blockchain-wallet/handlers"
+	"github.com/jabbala-dev/go-wallet/handlers"
 )
 
 func main() {
@@ -194,7 +201,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/blockchain-wallet/services"
+	"github.com/jabbala-dev/go-wallet/services"
 )
 
 func GenerateKeyPair(c *gin.Context) {
@@ -269,7 +276,7 @@ import (
 	"os"
 
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/yourusername/blockchain-wallet/utils"
+	"github.com/jabbala-dev/go-wallet/utils"
 )
 
 var privateKeyFile = "private_key.txt"
@@ -420,6 +427,28 @@ go mod tidy
 ```sh
 go run main.go
 ```
+
+### Endpoint Tests
+#### 1. generate keys
+```sh
+ curl http://localhost:8080/generate
+```
+
+#### 2. Address
+```sh
+http://localhost:8080/address
+```
+
+#### 3. sign
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"message":"Hello, Go Wallet"}' http://localhost:8080/sign
+```
+
+#### 4. Verify the transaction
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"message":"Hello, Go Wallet", "signature":"c71274f99339471fdfa73a4ea82d842982bfedf07f5c5b1df6108e9878494c021d1de0955fcc8869e770d83da2d6cc4ae6c5dddd30fa6fb4d313bd28a088650d00"}' http://localhost:8080/verify
+```
+
 
 ## Conclusion
 This project demonstrates the creation of a basic blockchain wallet application in Go, providing key functionalities such as generating key pairs, retrieving wallet addresses, signing messages, and verifying signatures. By structuring the project into well-defined modules and utilizing the gin-gonic framework for RESTful APIs, we have laid a strong foundation for further development and integration with other platforms.
