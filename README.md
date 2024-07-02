@@ -449,6 +449,11 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Hello, Go Walle
 curl -X POST -H "Content-Type: application/json" -d '{"message":"Hello, Go Wallet", "signature":"c71274f99339471fdfa73a4ea82d842982bfedf07f5c5b1df6108e9878494c021d1de0955fcc8869e770d83da2d6cc4ae6c5dddd30fa6fb4d313bd28a088650d00"}' http://localhost:8080/verify
 ```
 
+#### 5. Create and Send Transaction
+```sh
+curl -X POST http://localhost:8080/transaction -H "Content-Type: application/json" -d '{"to_address": "0xRecipientAddress", "value": 1000000000000000000}'
+```
+
 
 ## Conclusion
 This project demonstrates the creation of a basic blockchain wallet application in Go, providing key functionalities such as generating key pairs, retrieving wallet addresses, signing messages, and verifying signatures. By structuring the project into well-defined modules and utilizing the gin-gonic framework for RESTful APIs, we have laid a strong foundation for further development and integration with other platforms.

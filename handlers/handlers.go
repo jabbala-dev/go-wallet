@@ -65,3 +65,23 @@ func VerifyMessage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"valid": isValid})
 }
+
+func CreateAndSendTransaction(c *gin.Context) {
+	var request struct {
+		ToAddress string `json:"to_address"`
+		Value     int64  `json:"value"`
+	}
+
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	txHash, err := services.CreateAndSendTransaction(request.ToAddress, request.Value)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"transaction_hash": txHash})
+}
