@@ -712,6 +712,8 @@ document.addEventListener('DOMContentLoaded', () => {
 ### 6. Open the Application:
 Open your web browser and navigate to http://localhost:8080. You should see the client-side interface with buttons and input fields to interact with the blockchain wallet API.
 
+### 7. Result
+<img src="https://raw.githubusercontent.com/jabbala-dev/go-wallet/main/result/static.png" alt="result image"/>
 
 ## Conclusion
 This project demonstrates the creation of a basic blockchain wallet application in Go, providing key functionalities such as generating key pairs, retrieving wallet addresses, signing messages, and verifying signatures. By structuring the project into well-defined modules and utilizing the gin-gonic framework for RESTful APIs, we have laid a strong foundation for further development and integration with other platforms.
