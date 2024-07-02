@@ -454,6 +454,264 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Hello, Go Walle
 curl -X POST http://localhost:8080/transaction -H "Content-Type: application/json" -d '{"to_address": "0xRecipientAddress", "value": 1000000000000000000}'
 ```
 
+## Client
+We can create a simple client-side application using HTML, CSS, and JavaScript to interact with the blockchain wallet's API endpoints. We use `fetch` API to make `HTTP` requests to our Go Backend.
+
+### 1. Project Structure
+```go
+blockchain-wallet/
+│
+├── main.go
+├── handlers/
+│   └── handlers.go
+├── models/
+│   └── wallet.go
+├── services/
+│   └── wallet.go
+│   └── transaction.go
+├── utils/
+│   └── crypto.go
+├── public/
+│   └── index.html
+│   └── style.css
+│   └── app.js
+├── go.mod
+└── go.sum
+````
+### 2. `main.go`
+Update the main Go file to serve the static files:
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/yourusername/blockchain-wallet/handlers"
+)
+
+func main() {
+	r := gin.Default()
+
+	// Serve static files
+	r.Static("/static", "./static")
+
+	// Define routes
+	r.GET("/generate", handlers.GenerateKeyPair)
+	r.GET("/address", handlers.GetAddress)
+	r.POST("/sign", handlers.SignMessage)
+	r.POST("/verify", handlers.VerifyMessage)
+	r.POST("/transaction", handlers.CreateAndSendTransaction)
+
+	// Serve the main page
+	r.LoadHTMLFiles("static/index.html")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	// Start the server
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal("Failed to run server: ", err)
+	}
+}
+```
+### 3. `public/index.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Wallet</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Wallet</h1>
+
+        <div class="section">
+            <h2>Generate Key Pair</h2>
+            <button id="generate-btn">Generate</button>
+            <p id="generate-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Get Address</h2>
+            <button id="address-btn">Get Address</button>
+            <p id="address-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Sign Message</h2>
+            <input type="text" id="sign-message" placeholder="Enter message to sign">
+            <button id="sign-btn">Sign</button>
+            <p id="sign-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Verify Message</h2>
+            <input type="text" id="verify-message" placeholder="Enter message to verify">
+            <input type="text" id="verify-signature" placeholder="Enter signature">
+            <button id="verify-btn">Verify</button>
+            <p id="verify-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Create and Send Transaction</h2>
+            <input type="text" id="tx-to-address" placeholder="Recipient Address">
+            <input type="text" id="tx-value" placeholder="Value (in Wei)">
+            <button id="transaction-btn">Send Transaction</button>
+            <p id="transaction-result"></p>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+```
+
+### 4. `public/style.css`
+Create a CSS file for basic styling:
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+p {
+    margin-top: 10px;
+    font-size: 16px;
+    word-break: break-all;
+}
+
+```
+### 5. `public/app.js`
+Create a JavaScript file to handle the frontend logic and interact with the backend API:
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+    const generateBtn = document.getElementById('generate-btn');
+    const generateResult = document.getElementById('generate-result');
+
+    const addressBtn = document.getElementById('address-btn');
+    const addressResult = document.getElementById('address-result');
+
+    const signBtn = document.getElementById('sign-btn');
+    const signMessage = document.getElementById('sign-message');
+    const signResult = document.getElementById('sign-result');
+
+    const verifyBtn = document.getElementById('verify-btn');
+    const verifyMessage = document.getElementById('verify-message');
+    const verifySignature = document.getElementById('verify-signature');
+    const verifyResult = document.getElementById('verify-result');
+
+    const transactionBtn = document.getElementById('transaction-btn');
+    const txToAddress = document.getElementById('tx-to-address');
+    const txValue = document.getElementById('tx-value');
+    const transactionResult = document.getElementById('transaction-result');
+
+    generateBtn.addEventListener('click', async () => {
+        const response = await fetch('/generate');
+        const data = await response.json();
+        generateResult.textContent = `Private Key: ${data.private_key}, Address: ${data.address}`;
+    });
+
+    addressBtn.addEventListener('click', async () => {
+        const response = await fetch('/address');
+        const data = await response.json();
+        addressResult.textContent = `Address: ${data.address}`;
+    });
+
+    signBtn.addEventListener('click', async () => {
+        const message = signMessage.value;
+        const response = await fetch('/sign', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        signResult.textContent = `Signature: ${data.signature}`;
+    });
+
+    verifyBtn.addEventListener('click', async () => {
+        const message = verifyMessage.value;
+        const signature = verifySignature.value;
+        const response = await fetch('/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message, signature })
+        });
+        const data = await response.json();
+        verifyResult.textContent = `Valid: ${data.valid}`;
+    });
+
+    transactionBtn.addEventListener('click', async () => {
+        const toAddress = txToAddress.value;
+        const value = txValue.value;
+        const response = await fetch('/transaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ to_address: toAddress, value: parseInt(value) })
+        });
+        const data = await response.json();
+        transactionResult.textContent = `Transaction Hash: ${data.transaction_hash}`;
+    });
+});
+```
+### 6. Open the Application:
+Open your web browser and navigate to http://localhost:8080. You should see the client-side interface with buttons and input fields to interact with the blockchain wallet API.
+
 
 ## Conclusion
 This project demonstrates the creation of a basic blockchain wallet application in Go, providing key functionalities such as generating key pairs, retrieving wallet addresses, signing messages, and verifying signatures. By structuring the project into well-defined modules and utilizing the gin-gonic framework for RESTful APIs, we have laid a strong foundation for further development and integration with other platforms.
