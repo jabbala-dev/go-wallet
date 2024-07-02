@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Wallet</title>
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Wallet</h1>
+
+        <div class="section">
+            <h2>Generate Key Pair</h2>
+            <button id="generate-btn">Generate</button>
+            <p id="generate-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Get Address</h2>
+            <button id="address-btn">Get Address</button>
+            <p id="address-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Sign Message</h2>
+            <input type="text" id="sign-message" placeholder="Enter message to sign">
+            <button id="sign-btn">Sign</button>
+            <p id="sign-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Verify Message</h2>
+            <input type="text" id="verify-message" placeholder="Enter message to verify">
+            <input type="text" id="verify-signature" placeholder="Enter signature">
+            <button id="verify-btn">Verify</button>
+            <p id="verify-result"></p>
+        </div>
+
+        <div class="section">
+            <h2>Create and Send Transaction</h2>
+            <input type="text" id="tx-to-address" placeholder="Recipient Address">
+            <input type="text" id="tx-value" placeholder="Value (in Wei)">
+            <button id="transaction-btn">Send Transaction</button>
+            <p id="transaction-result"></p>
+        </div>
+    </div>
+
+    <script src="/public/app.js"></script>
+</body>
+</html>
